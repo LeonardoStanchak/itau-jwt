@@ -1,55 +1,58 @@
 package br.com.itau.jwt_validator_api.validator;
 
+import br.com.itau.jwt_validator_api.domain.JwtToken;
 import br.com.itau.jwt_validator_api.util.PrimeNumberUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
 
 @UtilityClass
 @Slf4j
 public class JwtClaimsValidator {
 
-    public static boolean isValid(Map<String, Object> claims) {
-        log.debug("Iniciando validação de claims: {}", claims);
+    public static boolean isValid(JwtToken token) {
+        log.debug("Iniciando validação de claims: {}", token);
 
-        if (claims.size() != 3) {
-            log.warn("JWT inválido: número incorreto de claims. Esperado 3, encontrado {}", claims.size());
+        if (!isValidName(token.name())) {
+            log.warn("Nome inválido: '{}'", token.name());
             return false;
         }
 
-        if (!claims.containsKey("Name") || !claims.containsKey("Role") || !claims.containsKey("Seed")) {
-            log.warn("JWT inválido: claims obrigatórios ausentes.");
+        if (!isValidRole(token.role())) {
+            log.warn("Role inválida: '{}'", token.role());
             return false;
         }
 
-        Object nameObj = claims.get("Name");
-        if (!(nameObj instanceof String name) || name.length() > 256 || name.matches(".*\\d.*")) {
-            log.warn("Claim 'Name' inválida: {}", nameObj);
+        if (!isValidSeed(token.seed())) {
+            log.warn("Seed inválida: '{}'", token.seed());
             return false;
         }
 
-        Object roleObj = claims.get("Role");
-        if (!(roleObj instanceof String role) ||
-                !(role.equals("Admin") || role.equals("Member") || role.equals("External"))) {
-            log.warn("Claim 'Role' inválida: {}", roleObj);
-            return false;
-        }
-
-        Object seedObj = claims.get("Seed");
-        String seedStr = seedObj.toString();
-        if (!seedStr.matches("\\d+")) {
-            log.warn("Claim 'Seed' não numérica: {}", seedStr);
-            return false;
-        }
-
-        int seed = Integer.parseInt(seedStr);
-        if (!PrimeNumberUtil.isPrime(seed)) {
-            log.warn("Claim 'Seed' não é número primo: {}", seed);
-            return false;
-        }
-
-        log.debug("Claims válidas.");
+        log.debug("Claims do JWT validadas com sucesso.");
         return true;
+    }
+
+    private boolean isValidName(String name) {
+        return name != null && name.length() <= 256 && !name.matches(".*\\d.*");
+    }
+
+    private boolean isValidRole(String role) {
+        return role != null && switch (role) {
+            case "Admin", "Member", "External" -> true;
+            default -> false;
+        };
+    }
+
+    private boolean isValidSeed(String seedStr) {
+        if (seedStr == null || !seedStr.matches("\\d+")) {
+            return false;
+        }
+
+        try {
+            int seed = Integer.parseInt(seedStr);
+            return PrimeNumberUtil.isPrime(seed);
+        } catch (NumberFormatException e) {
+            log.error("Seed não pôde ser convertida para inteiro: {}", seedStr);
+            return false;
+        }
     }
 }
