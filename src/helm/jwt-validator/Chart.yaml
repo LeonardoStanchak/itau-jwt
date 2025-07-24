@@ -1,0 +1,4 @@
+apiVersion: v2
+name: jwt-validator
+description: A Helm chart for the JWT Validator API
+version: 0.1.0
