@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "7ced81f5-c44f-4898-8cb5-3c81790677dd",
+		"name": "Projeto Itau",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25206186",
+		"_collection_link": "https://dark-meadow-358562.postman.co/workspace/Stanchak-Importadora~5b18326e-e56e-470d-846f-13af895cacad/collection/25206186-7ced81f5-c44f-4898-8cb5-3c81790677dd?action=share&source=collection_link&creator=25206186"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/api/v1/validate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"jwt\": \"eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJTZWVkIjoiNzg0MSIsIk5hbWUiOiJUb25pbmhvIEFyYXVqbyJ9.QY05sIjtrcJnP533kQNk8QXcaleJ1Q01jWY_ZzIZuAg\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/validate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"validate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
